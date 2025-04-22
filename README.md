@@ -1,36 +1,20 @@
-# Base MCP Server 🔵
+# Hashkey MCP Server 🔵
 
 ![OpenRouter Integration](public/OpenRouter.gif)
 
 [![npm version](https://img.shields.io/npm/v/hashkey-mcp.svg)](https://www.npmjs.com/package/hashkey-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that provides onchain tools for AI applications like Claude Desktop and Cursor, allowing them to interact with the Base Network and Coinbase API.
+A Model Context Protocol (MCP) server that provides onchain tools for AI applications like Claude Desktop and Cursor, allowing them to interact with the Hashkey Network.
 
-## Overview
 
-This MCP server extends any MCP client's capabilities by providing tools to do anything on Base:
+## Extending Hashkey MCP with 3P Protocols, Tools, and Data Sources
 
-- Retrieve wallet addresses
-- List wallet balances
-- Transfer funds between wallets
-- Deploy smart contracts
-- Interact with Morpho vaults for onchain lending
-- Call contract functions
-- Onramp funds via [Coinbase](https://www.coinbase.com/developer-platform/products/onramp)
-- Manage ERC20 tokens
-- List and transfer NFTs (ERC721 and ERC1155)
-- Buy [OpenRouter](http://openrouter.ai/) credits with USDC
-
-The server interacts with Base, powered by Base Developer Tools and [AgentKit](https://github.com/coinbase/agentkit).
-
-## Extending Base MCP with 3P Protocols, Tools, and Data Sources
-
-Base MCP is designed to be extensible, allowing you to add your own third-party protocols, tools, and data sources. This section provides an overview of how to extend the Base MCP server with new capabilities.
+Hashkey MCP is designed to be extensible, allowing you to add your own third-party protocols, tools, and data sources. This section provides an overview of how to extend the Hashkey MCP server with new capabilities.
 
 ### Adding New Tools
 
-If you want to add a new tool to the Base MCP server, follow these steps:
+If you want to add a new tool to the Hashkey MCP server, follow these steps:
 
 1. Create a new directory in the `src/tools` directory for your tool
 2. Implement the tool following the existing patterns:
@@ -44,7 +28,7 @@ If you want to add a new tool to the Base MCP server, follow these steps:
 
 ### Project Structure
 
-The Base MCP server follows this structure for tools:
+The Hashkey MCP server follows this structure for tools:
 
 ```
 src/
@@ -59,7 +43,7 @@ src/
 
 ### Best Practices for Tool Development
 
-When developing new tools for Base MCP:
+When developing new tools for Hashkey MCP:
 
 - Follow the existing code style and patterns
 - Ensure your tool has a clear, focused purpose
@@ -69,7 +53,7 @@ When developing new tools for Base MCP:
 - Add examples demonstrating how to use your tool
 - Include tests for your tool
 
-For more detailed information on contributing to Base MCP, including adding new tools and protocols, see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+For more detailed information on contributing to Hashkey MCP, including adding new tools and protocols, see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## Prerequisites
 
@@ -151,9 +135,6 @@ ALCHEMY_API_KEY=your_alchemy_api_key
 # You can obtain this from https://openrouter.ai/keys
 OPENROUTER_API_KEY=your_openrouter_api_key
 
-# Chain ID (optional for Base Sepolia testnet)
-# Use 84532 for Base Sepolia testnet
-# You do not have to include this if you want to use Base Mainnet
 CHAIN_ID=your_chain_id
 ```
 
@@ -169,7 +150,7 @@ This script will verify that your MCP server is working correctly by testing the
 
 ## Examples
 
-See the [examples.md](examples.md) file for detailed examples of how to interact with the Base MCP tools through Claude.
+See the [examples.md](examples.md) file for detailed examples of how to interact with the Hashkey MCP tools through Claude.
 
 ## Integration with Claude Desktop
 
@@ -403,7 +384,7 @@ If you encounter issues:
 
 1. Check that your Coinbase API credentials are correct
 2. Verify that your seed phrase is valid
-3. Ensure you're on the correct network (Base Mainnet)
+3. Ensure you're on the correct network (Hashkey Mainnet)
 4. Check the Claude Desktop logs for any error messages
 
 ## License
@@ -414,13 +395,13 @@ If you encounter issues:
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-For detailed guidelines on contributing to Base MCP, including:
+For detailed guidelines on contributing to Hashkey MCP, including:
 
 - Reporting bugs
 - Suggesting enhancements
 - Development setup
 - Coding standards
-- **Adding new tools, protocols, and data sources** (see also the [Extending Base MCP](#extending-hashkey-mcp-with-3p-protocols-tools-and-data-sources) section above)
+- **Adding new tools, protocols, and data sources** (see also the [Extending Hashkey MCP](#extending-hashkey-mcp-with-3p-protocols-tools-and-data-sources) section above)
 - Testing requirements
 - Documentation standards
 
