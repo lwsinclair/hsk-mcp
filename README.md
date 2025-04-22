@@ -104,7 +104,7 @@ hashkey-mcp --init
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/base/hashkey-mcp.git
+   git clone https://github.com/HashkeyHSK/hashkey-mcp.git
    cd hashkey-mcp
    ```
 

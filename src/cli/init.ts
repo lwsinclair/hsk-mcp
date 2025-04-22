@@ -71,7 +71,7 @@ export async function init() {
   console.log(`\n`);
   console.log(
     chalk.blueBright(
-      `🔵 Welcome to the Hashkey MCP CLI! \nThis tool will help you initialize a new MCP server in various apps (Claude, etc.)\nTo learn more, visit https://github.com/base/hashkey-mcp.`,
+      `🔵 Welcome to the Hashkey MCP CLI! \nThis tool will help you initialize a new MCP server in various apps (Claude, etc.)\nTo learn more, visit https://github.com/HashkeyHSK/hashkey-mcp.`,
     ),
   );
 
