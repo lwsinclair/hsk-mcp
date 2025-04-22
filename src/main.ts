@@ -2,12 +2,13 @@ import {
   AgentKit,
   cdpApiActionProvider,
   cdpWalletActionProvider,
+  ViemWalletProvider,
   CdpWalletProvider,
   walletActionProvider,
   erc20ActionProvider,
   erc721ActionProvider,
   wowActionProvider,
-} from '@hashkey/agentkit';
+} from '@hashkeychain/agentkit';
 // import { getMcpTools } from '@coinbase/agentkit-model-context-protocol';
 import { getMcpTools } from '@coinbase/agentkit-model-context-protocol';
 import { Coinbase } from '@coinbase/coinbase-sdk';
@@ -25,11 +26,15 @@ import {
   type PublicActions,
   type WalletClient,
 } from 'viem';
-import { mnemonicToAccount } from 'viem/accounts';
+import { english, generateMnemonic, mnemonicToAccount } from 'viem/accounts';
+import { Event, postMetric } from './analytics.js';
 import { hashkeyTestnet } from 'viem/chains';
 import { chainIdToCdpNetworkId, chainIdToChain } from './chains.js';
 import { baseMcpTools, toolToHandler } from './tools/index.js';
-import { getActionProvidersWithRequiredEnvVars } from './utils.js';
+import {
+  generateSessionId,
+  getActionProvidersWithRequiredEnvVars,
+} from './utils.js';
 import { version } from './version.js';
 
 export async function main() {
@@ -39,15 +44,19 @@ export async function main() {
   const privateKey =
     process.env.COINBASE_API_SECRET || process.env.COINBASE_API_PRIVATE_KEY; // Previously, was called COINBASE_API_PRIVATE_KEY
   const seedPhrase = process.env.SEED_PHRASE;
+  const fallbackPhrase = generateMnemonic(english, 256); // Fallback in case user wants read-only operations
   const chainId = process.env.CHAIN_ID ? Number(process.env.CHAIN_ID) : hashkeyTestnet.id;
 
-  // TODO: stricter checks for required env vars with better error messaging
-  if (!apiKeyName || !privateKey || !seedPhrase) {
+  if (!apiKeyName || !privateKey) {
     console.error(
-      'Please set COINBASE_API_KEY_NAME, COINBASE_API_PRIVATE_KEY, and SEED_PHRASE environment variables',
+      'Please set COINBASE_API_KEY_NAME and COINBASE_API_PRIVATE_KEY environment variables',
     );
     process.exit(1);
   }
+
+  const sessionId = generateSessionId();
+
+  postMetric(Event.Initialized, {}, sessionId);
 
   const chain = chainIdToChain(chainId);
   if (!chain) {
@@ -57,32 +66,33 @@ export async function main() {
   }
 
   const viemClient = createWalletClient({
-    account: mnemonicToAccount(seedPhrase),
+    account: mnemonicToAccount(seedPhrase ?? fallbackPhrase),
     chain,
     transport: http(),
   }).extend(publicActions) as WalletClient & PublicActions;
-
-  const cdpWalletProvider = await CdpWalletProvider.configureWithWallet({
-    mnemonicPhrase: seedPhrase,
-    apiKeyName,
-    apiKeyPrivateKey: privateKey,
-    networkId: chainIdToCdpNetworkId[chainId],
-  });
+  
+  // const cdpWalletProvider = await CdpWalletProvider.configureWithWallet({
+  //   mnemonicPhrase: seedPhrase ?? fallbackPhrase,
+  //   apiKeyName,
+  //   apiKeyPrivateKey: privateKey,
+  //   networkId: chainIdToCdpNetworkId[chainId],
+  // });
+  const viemWalletProvider = new ViemWalletProvider(viemClient);
  
   const agentKit = await AgentKit.from({
     cdpApiKeyName: apiKeyName,
     cdpApiKeyPrivateKey: privateKey,
-    walletProvider: cdpWalletProvider,
+    walletProvider: viemWalletProvider,
     actionProviders: [
       // TODO: add more action providers
       // 后续接入自己的 ens 和 kyc 服务
       // basenameActionProvider(),
       // morphoActionProvider(),
       walletActionProvider(),
-      cdpWalletActionProvider({
-        apiKeyName,
-        apiKeyPrivateKey: privateKey,
-      }),
+      // cdpWalletActionProvider({
+      //   apiKeyName,
+      //   apiKeyPrivateKey: privateKey,
+      // }),
       cdpApiActionProvider({
         apiKeyName,
         apiKeyPrivateKey: privateKey,
@@ -97,10 +107,11 @@ export async function main() {
       ...getActionProvidersWithRequiredEnvVars(),
     ],
   });
+
   if (!agentKit) {
     throw new Error('Failed to create agent kit');
   }
-  console.log(agentKit, 'agentKit');
+
   // const { tools, toolHandler } = await getMcpTools(agentKit);
   const { tools, toolHandler } = await getMcpTools(agentKit as any);
   const server = new Server(
@@ -131,6 +142,9 @@ export async function main() {
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     try {
+      postMetric(Event.ToolUsed, { toolName: request.params.name }, sessionId);
+
+      // Check if the tool is Base MCP tool
       // Check if the tool is Hashkey MCP tool
       const isBaseMcpTool = baseMcpTools.some(
         (tool) => tool.definition.name === request.params.name,
@@ -149,6 +163,18 @@ export async function main() {
             {
               type: 'text',
               text: JSON.stringify(result),
+            },
+          ],
+        };
+      }
+
+      // In order for users to use AgentKit tools, they are required to have a SEED_PHRASE and not a ONE_TIME_KEY
+      if (!seedPhrase) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: 'ERROR: Please set SEED_PHRASE environment variable to use wallet-related operations',
             },
           ],
         };

@@ -1,4 +1,5 @@
-// import { flaunchActionProvider } from '@hashkey/agentkit';
+import crypto from 'crypto';
+// import { flaunchActionProvider } from '@hashkeychain/agentkit';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 import { zodToJsonSchema, type JsonSchema7Type } from 'zod-to-json-schema';
@@ -64,4 +65,8 @@ export function getActionProvidersWithRequiredEnvVars() {
   }
 
   return [];
+}
+
+export function generateSessionId(): string {
+  return crypto.randomUUID();
 }

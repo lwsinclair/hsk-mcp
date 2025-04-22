@@ -1,22 +1,14 @@
 {
   "mcpServers": {
     "base-mcp": {
-      "command": "wsl",
-      "args": [
-        "-d",
-        "Ubuntu-20.04",
-        "-e",
-        "bash",
-        "-c",
-        "source /home/leo/.nvm/nvm.sh && node /home/leo/work/ai/base-mcp/build/index.js"
-      ],
+      "command": "node",
+      "args": ["/Users/tinahe/base-mcp/build/index.js"],
       "env": {
-        "COINBASE_API_KEY_NAME": "98496c57-7932-468e-bf0e-fc46ca882395",
-        "COINBASE_API_PRIVATE_KEY": "VBOLBZSDuWW6PN91TRfir3BIB9cYpo7Zr2oCGd9rW8S+eAylHqXXYcjKFAzylN3fsrK+EhKXLRICZeh+EBcGpQ==",
-        "SEED_PHRASE": "someone vote uncover blanket wild hundred vault coil setup rack lamp violin",
-        "COINBASE_PROJECT_ID": "5486300e-2a82-4652-abe5-62ddf9f05c73",
-        "OPENROUTER_API_KEY": "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",
-        "CHAIN_ID": "133"
+        "COINBASE_API_KEY_NAME": "YOUR_COINBASE_API_KEY_NAME",
+        "COINBASE_API_PRIVATE_KEY": "YOUR_COINBASE_API_PRIVATE_KEY",
+        "SEED_PHRASE": "YOUR_WALLET_SEED_PHRASE",
+        "COINBASE_PROJECT_ID": "YOUR_COINBASE_PROJECT_ID",
+        "OPENROUTER_API_KEY": "YOUR_OPENROUTER_API_KEY" // Optional, only needed for OpenRouter credits
       },
       "disabled": false,
       "autoApprove": []
