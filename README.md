@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/mseep-audited.png)](https://mseep.ai/app/hashkeyhsk-hsk-mcp)
+
 # Hashkey MCP Server 🔵
 
 ![OpenRouter Integration](public/OpenRouter.gif)
